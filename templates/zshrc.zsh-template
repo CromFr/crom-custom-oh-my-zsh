@@ -69,7 +69,7 @@ export EDITOR='vim'
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-alias lat='la -t'
+alias lat='ls -laht'
 function mkcd{
   mkdir $*
   cd $1
