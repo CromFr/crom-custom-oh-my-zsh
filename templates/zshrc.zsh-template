@@ -70,7 +70,7 @@ export EDITOR='vim'
 # export ARCHFLAGS="-arch x86_64"
 
 alias lat='ls -laht'
-function mkcd{
+function mkcd {
   mkdir $*
   cd $1
 }
