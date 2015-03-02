@@ -70,6 +70,7 @@ export EDITOR='vim'
 # export ARCHFLAGS="-arch x86_64"
 
 alias lat='la -t'
+alias tree='tree -C'
 function mkcd{
   mkdir $*
   cd $1
