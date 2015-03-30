@@ -71,7 +71,7 @@ export EDITOR='vim'
 
 alias lat='ls -laht'
 alias tree='tree -C'
-function mkcd{
+function mkcd {
   mkdir $*
   cd $1
 }
