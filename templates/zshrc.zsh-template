@@ -75,3 +75,6 @@ function mkcd {
   mkdir $*
   cd $1
 }
+
+# multithreaded xz compression/decompression
+export XZ_OPT="--threads=16"
