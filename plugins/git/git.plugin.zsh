@@ -46,7 +46,7 @@ alias gapa='git add --patch'
 
 alias gb='git branch'
 alias gba='git branch -a'
-alias gbda='git branch --merged | command grep -vE "^(\*|\s*master\s*$)" | command xargs -n 1 git branch -d'
+alias gbda='git branch --no-color --merged | command grep -vE "^(\*|\s*(master|develop|dev)\s*$)" | command xargs -n 1 git branch -d'
 alias gbl='git blame -b -w'
 alias gbnm='git branch --no-merged'
 alias gbr='git branch --remote'
@@ -88,7 +88,7 @@ alias gdw='git diff --word-diff'
 alias gf='git fetch'
 alias gfa='git fetch --all --prune'
 function gfg() { git ls-files | grep $@ }
-compdef gfg=grep
+compdef _grep gfg
 alias gfo='git fetch origin'
 
 alias gg='git gui citool'
