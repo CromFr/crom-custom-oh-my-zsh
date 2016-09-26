@@ -96,6 +96,10 @@ alias gga='git gui citool --amend'
 ggf() {
 [[ "$#" != 1 ]] && local b="$(git_current_branch)"
 git push --force origin "${b:=$1}"
+#alias git-svn-dcommit-push='git svn dcommit && git push github master:svntrunk'
+#compdef git-svn-dcommit-push=git
+#alias gsr='git svn rebase'
+#alias gsd='git svn dcommit'
 }
 compdef _git ggf=git-checkout
 ggl() {
