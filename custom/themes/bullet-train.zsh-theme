@@ -23,12 +23,14 @@ if [ ! -n "${BULLETTRAIN_PROMPT_ORDER+1}" ]; then
     custom
     context
     dir
+    screen
     perl
     ruby
     virtualenv
     nvm
     aws
     go
+    rust
     elixir
     git
     hg
@@ -136,6 +138,28 @@ if [ ! -n "${BULLETTRAIN_GO_FG+1}" ]; then
 fi
 if [ ! -n "${BULLETTRAIN_GO_PREFIX+1}" ]; then
   BULLETTRAIN_GO_PREFIX="go"
+fi
+
+# Rust
+if [ ! -n "${BULLETTRAIN_RUST_BG+1}" ]; then
+  BULLETTRAIN_RUST_BG=black
+fi
+if [ ! -n "${BULLETTRAIN_RUST_FG+1}" ]; then
+  BULLETTRAIN_RUST_FG=white
+fi
+if [ ! -n "${BULLETTRAIN_RUST_PREFIX+1}" ]; then
+  BULLETTRAIN_RUST_PREFIX="🦀"
+fi
+
+# Kubernetes Context
+if [ ! -n "${BULLETTRAIN_KCTX_BG+1}" ]; then
+  BULLETTRAIN_KCTX_BG=yellow
+fi
+if [ ! -n "${BULLETTRAIN_KCTX_FG+1}" ]; then
+  BULLETTRAIN_KCTX_FG=white
+fi
+if [ ! -n "${BULLETTRAIN_KCTX_PREFIX+1}" ]; then
+  BULLETTRAIN_KCTX_PREFIX="⎈"
 fi
 
 # ELIXIR
@@ -273,6 +297,17 @@ if [ ! -n "${BULLETTRAIN_GIT_DIVERGED+1}" ]; then
   ZSH_THEME_GIT_PROMPT_DIVERGED=" ⬍"
 else
   ZSH_THEME_GIT_PROMPT_DIVERGED=$BULLETTRAIN_GIT_PROMPT_DIVERGED
+fi
+
+# SCREEN
+if [ ! -n "${BULLETTRAIN_SCREEN_BG+1}" ]; then
+  BULLETTRAIN_SCREEN_BG=white
+fi
+if [ ! -n "${BULLETTRAIN_SCREEN_FG+1}" ]; then
+  BULLETTRAIN_SCREEN_FG=black
+fi
+if [ ! -n "${BULLETTRAIN_SCREEN_PREFIX+1}" ]; then
+  BULLETTRAIN_SCREEN_PREFIX="⬗"
 fi
 
 # COMMAND EXECUTION TIME
@@ -501,8 +536,29 @@ prompt_go() {
   setopt extended_glob
   if [[ (-f *.go(#qN) || -d Godeps || -f glide.yaml) ]]; then
     if command -v go > /dev/null 2>&1; then
-      prompt_segment $BULLETTRAIN_GO_BG $BULLETTRAIN_GO_FG $BULLETTRAIN_GO_PREFIX" $(go version | grep --colour=never -oE '[[:digit:]].[[:digit:]]')"
+      prompt_segment $BULLETTRAIN_GO_BG $BULLETTRAIN_GO_FG $BULLETTRAIN_GO_PREFIX" $(go version | grep --colour=never -oE '[[:digit:]].[[:digit:]]+')"
     fi
+  fi
+}
+
+# Rust
+prompt_rust() {
+  if [[ (-f Cargo.toml) ]]; then
+    if command -v rustc > /dev/null 2>&1; then
+      prompt_segment $BULLETTRAIN_RUST_BG $BULLETTRAIN_RUST_FG $BULLETTRAIN_RUST_PREFIX" $(rustc -V version | cut -d' ' -f2)"
+    fi
+  fi
+}
+
+# Kubernetes Context
+prompt_kctx() {
+  if [[ ! -n $BULLETTRAIN_KCTX_KCONFIG ]]; then
+    return
+  fi
+  if command -v kubectl > /dev/null 2>&1; then
+    if [[ -f $BULLETTRAIN_KCTX_KCONFIG ]]; then
+      prompt_segment $BULLETTRAIN_KCTX_BG $BULLETTRAIN_KCTX_FG $BULLETTRAIN_KCTX_PREFIX" $(cat $BULLETTRAIN_KCTX_KCONFIG|grep current-context| awk '{print $2}')"
+    fi  
   fi
 }
 
@@ -537,6 +593,14 @@ prompt_aws() {
 
   if [[ -n "$AWS_PROFILE" ]]; then
     prompt_segment $BULLETTRAIN_AWS_BG $BULLETTRAIN_AWS_FG $BULLETTRAIN_AWS_PREFIX$spaces$AWS_PROFILE
+  fi
+}
+
+# SCREEN Session
+prompt_screen() {
+  local session_name="$STY"
+  if [[ "$session_name" != "" ]]; then
+    prompt_segment $BULLETTRAIN_SCREEN_BG $BULLETTRAIN_SCREEN_FG $BULLETTRAIN_SCREEN_PREFIX" $session_name"
   fi
 }
 
@@ -580,7 +644,11 @@ prompt_chars() {
     bt_prompt_chars="${bt_prompt_chars}"
   fi
 
-  echo -n "$bt_prompt_chars "
+  echo -n "$bt_prompt_chars"
+
+  if [[ -n $BULLETTRAIN_PROMPT_CHAR ]]; then
+    echo -n " "
+  fi
 }
 
 # Prompt Line Separator
