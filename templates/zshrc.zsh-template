@@ -31,10 +31,6 @@ BULLETTRAIN_PROMPT_ORDER=(
 
 source $ZSH/custom/tilix_int.sh
 
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
@@ -87,7 +83,12 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting dircycle zsh-autosuggestions)
+plugins=(
+  git
+  zsh-syntax-highlighting
+  dircycle
+  zsh-autosuggestions
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,11 +108,25 @@ export EDITOR='vim'
 # multithreaded xz compression/decompression
 export XZ_OPT="--threads=$(lscpu | awk '/^CPU\(s\):\s*([0-9]+)/ {print $2}')"
 
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
 # Pass config
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
+unalias gdb
 alias lat='ls -laht'
 alias tree='tree -C'
+alias open=xdg-open
 
 # Print failed systemd units
 FAILED=$(systemctl list-units --state=failed --no-legend)
