@@ -1,9 +1,8 @@
-locals.zsh
-log/.zsh_history
-projects.zsh
+# custom files
+custom/
 
-
-
-*.swp
-!custom/example.zshcache
+# temp files directories
 cache/
+log/
+*.swp
+.DS_Store
