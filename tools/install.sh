@@ -108,7 +108,7 @@ setup_ohmyzsh() {
     exit 1
   fi
 
-  git clone -c core.eol=lf -c core.autocrlf=false \
+  git clone --recurse -c core.eol=lf -c core.autocrlf=false \
     -c fsck.zeroPaddedFilemode=ignore \
     -c fetch.fsck.zeroPaddedFilemode=ignore \
     -c receive.fsck.zeroPaddedFilemode=ignore \

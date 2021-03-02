@@ -135,6 +135,8 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 alias lat='ls -laht'
 alias tree='tree -C'
 alias open=xdg-open
+alias bat='bat -p --paging=never'
+alias sqlite3='sqlite3 -column -header'
 
 # Print failed systemd units
 FAILED=$(systemctl list-units --state=failed --no-legend)
