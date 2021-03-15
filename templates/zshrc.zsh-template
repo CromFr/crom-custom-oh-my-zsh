@@ -35,7 +35,7 @@ BULLETTRAIN_PROMPT_ORDER=(
     cmd_exec_time
   )
 
-source $ZSH/custom/tilix_int.sh
+TILIX_SILENT=1 source $ZSH/custom/tilix_int.sh
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
