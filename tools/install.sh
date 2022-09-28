@@ -287,10 +287,15 @@ setup_ohmyzsh() {
   && git checkout -b "$BRANCH" "origin/$BRANCH" \
   && git submodule init \
   && git submodule update || {
-    [ ! -d "$ZSH" ] || rm -rf "$ZSH" 2>/dev/null
+    [ ! -d "$ZSH" ] || {
+      cd -
+      rm -rf "$ZSH" 2>/dev/null
+    }
     fmt_error "git clone of oh-my-zsh repo failed"
     exit 1
   }
+  # Exit installation directory
+  cd -
 
   echo
 }
