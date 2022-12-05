@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -120,7 +120,7 @@ export EDITOR='vim'
 # export ARCHFLAGS="-arch x86_64"
 
 # multithreaded xz compression/decompression
-export XZ_OPT="--threads=$(lscpu | awk '/^CPU\(s\):\s*([0-9]+)/ {print $2}')"
+export XZ_OPT="-T0"
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
@@ -137,26 +137,39 @@ export XZ_OPT="--threads=$(lscpu | awk '/^CPU\(s\):\s*([0-9]+)/ {print $2}')"
 # Pass config
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
-# 
-if [ -n "$DESKTOP_SESSION" ] && command gnome-keyring-daemon >& /dev/null; then
-	eval $(gnome-keyring-daemon --start)
-	export SSH_AUTH_SOCK
+# Hook to SSH agent
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    if command -v gnome-keyring-daemon >& /dev/null \
+	&& pgrep -u "$USER" -f "^(/.*/)?gnome-keyring-daemon\b" >& /dev/null; then
+        # Hook to gnome keyring daemon
+        export GNOME_KEYRING_CONTROL=$XDG_RUNTIME_DIR/keyring
+        export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/keyring/ssh
+    elif command -v ssh-agent >&/dev/null; then
+        # Start and hook to ssh-agent
+        if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+            echo "Starting ssh-agent"
+            ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+        fi
+        source "$XDG_RUNTIME_DIR/ssh-agent.env"
+    fi
 fi
+
 
 
 #unalias gdc
 alias lat='ls -laht'
 alias tree='tree -C'
-alias open=xdg-open
+alias open='xdg-open'
 alias bat='bat -p --paging=never'
 alias sqlite3='sqlite3 -column -header'
+alias fd='fd -I'
 
 # Print failed systemd units
 FAILED=$(systemctl list-units --state=failed --no-legend)
 if [[ ! -z "${FAILED}" ]]; then
 	COUNT=$(wc -l <<<"${FAILED}")
 	echo -e "Failed Units: \033[31m${COUNT}\033[39m"
-	awk '{ print "  " $1 }' <<<"${FAILED}"
+	cut -d' ' -f-2 <<<"${FAILED}"
 fi
 
 
