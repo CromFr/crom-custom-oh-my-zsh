@@ -160,7 +160,7 @@ fi
 alias lat='ls -laht'
 alias tree='tree -C'
 alias open='xdg-open'
-alias bat='bat -p --paging=never'
+alias bat='bat -pP'
 alias sqlite3='sqlite3 -column -header'
 alias fd='fd -I'
 
