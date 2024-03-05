@@ -138,20 +138,25 @@ export XZ_OPT="-T0"
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
 # Hook to SSH agent
+export GNOME_KEYRING_CONTROL="$XDG_RUNTIME_DIR/keyring"
 if [ -z "$SSH_AUTH_SOCK" ]; then
-    if command -v gnome-keyring-daemon >& /dev/null \
-	&& pgrep -u "$USER" -f "^(/.*/)?gnome-keyring-daemon\b" >& /dev/null; then
-        # Hook to gnome keyring daemon
-        export GNOME_KEYRING_CONTROL=$XDG_RUNTIME_DIR/keyring
-        export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/keyring/ssh
-    elif command -v ssh-agent >&/dev/null; then
-        # Start and hook to ssh-agent
-        if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-            echo "Starting ssh-agent"
-            ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
-        fi
-        source "$XDG_RUNTIME_DIR/ssh-agent.env"
-    fi
+	if [ -e "$XDG_RUNTIME_DIR/gcr/ssh" ]; then
+		# Attach to GNOME ssh daemon
+		export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+	elif [ -f "$XDG_RUNTIME_DIR/ssh-agent.env" ]; then
+		# Attach to a running ssh-agent
+		source "$XDG_RUNTIME_DIR/ssh-agent.env" > /dev/null
+		if ! kill -0 $SSH_AGENT_PID >& /dev/null; then
+			echo "ssh-agent is dead, restarting it..."
+			ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+			source "$XDG_RUNTIME_DIR/ssh-agent.env"
+		fi
+	else
+		# Start a new ssh agent
+		echo "Starting ssh-agent"
+		ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+		source "$XDG_RUNTIME_DIR/ssh-agent.env"
+	fi
 fi
 
 
